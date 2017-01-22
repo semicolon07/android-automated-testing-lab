@@ -7,15 +7,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.unigainfo.calculator.exception.DivideByZeroException;
+interface MainView{
+    void sendResult(String result);
+}
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainView{
 
     private EditText firstNumberEditText;
     private EditText secondNumberEditText;
     private Button plusButton, minusButton, multiplyButton, divideButton;
-    private Calculator calculator;
-    private int firstNumber,secondNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initInstances() {
-        calculator = new Calculator();
         //Bind View
         firstNumberEditText = (EditText) findViewById(R.id.firstNumber_editText);
         secondNumberEditText = (EditText) findViewById(R.id.secondNumber_editText);
@@ -37,77 +36,57 @@ public class MainActivity extends AppCompatActivity {
         divideButton = (Button) findViewById(R.id.divide_button);
 
         //Bind Listener
-        plusButton.setOnClickListener(calculatorActionButtonListener);
-        minusButton.setOnClickListener(calculatorActionButtonListener);
-        multiplyButton.setOnClickListener(calculatorActionButtonListener);
-        divideButton.setOnClickListener(calculatorActionButtonListener);
+        plusButton.setOnClickListener(onPlusButtonClickListener);
+        minusButton.setOnClickListener(onMinusButtonClickListener);
+        multiplyButton.setOnClickListener(onMultiplyButtonClickListener);
+        divideButton.setOnClickListener(onDivideButtonClickListener);
 
     }
 
-    private void setupText(){
+    private MainController getMainController(){
         String firstNumberText = firstNumberEditText.getText().toString();
         String secondNumberText = secondNumberEditText.getText().toString();
 
-        firstNumber = Integer.valueOf(firstNumberText);
-        secondNumber = Integer.valueOf(secondNumberText);
+        MainController mainController = new MainController(this);
+        mainController.setupInput(firstNumberText,secondNumberText);
+
+        return mainController;
     }
 
-
     // Listener
-    public final View.OnClickListener calculatorActionButtonListener = new View.OnClickListener() {
+    public final View.OnClickListener onPlusButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            setupText();
-            switch (v.getId()) {
-                case R.id.plus_button:
-                    plus();
-                    break;
-                case R.id.minus_button:
-                    minus();
-                    break;
-                case R.id.multiply_button:
-                    multiply();
-                    break;
-                case R.id.divide_button:
-                    divide();
-                    break;
-                default:
-            }
+            MainController mainController = getMainController();
+            mainController.plus();
+        }
+    };
+    public final View.OnClickListener onMinusButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            MainController mainController = getMainController();
+            mainController.minus();
         }
     };
 
-    private void divide() {
-        try{
-            int result = calculator.divide(firstNumber,secondNumber);
-            showResult(result);
-        }catch (DivideByZeroException e){
-            showResult("หาร 0 ไม่ได้นะ");
+    public final View.OnClickListener onMultiplyButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            MainController mainController = getMainController();
+            mainController.multiply();
         }
-    }
+    };
+    public final View.OnClickListener onDivideButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            MainController mainController = getMainController();
+            mainController.divide();
+        }
+    };
 
-    private void showResult(String result) {
+    @Override
+    public void sendResult(String result) {
         Intent intent = ResultActivity.callingIntent(this, result);
-        startActivity(intent);
-    }
-
-    private void multiply() {
-        int result = calculator.multiply(firstNumber,secondNumber);
-        showResult(result);
-    }
-
-    private void minus() {
-        int result = calculator.minus(firstNumber,secondNumber);
-        showResult(result);
-    }
-
-    private void plus(){
-        int result = calculator.plus(firstNumber,secondNumber);
-        showResult(result);
-    }
-
-
-    private void showResult(int result) {
-        Intent intent = ResultActivity.callingIntent(this, String.valueOf(result));
         startActivity(intent);
     }
 }
