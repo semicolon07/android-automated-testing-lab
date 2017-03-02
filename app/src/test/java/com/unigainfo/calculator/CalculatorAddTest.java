@@ -24,7 +24,6 @@ public class CalculatorAddTest {
         int result = calculator.plus(2,2);
         //Assert
         int expect = 4;
-        //Test Before
         assertEquals(expect,result);
     }
 
