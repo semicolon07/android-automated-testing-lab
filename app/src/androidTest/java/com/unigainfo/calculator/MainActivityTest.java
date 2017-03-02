@@ -21,14 +21,6 @@ public class MainActivityTest {
             new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void plus_2_2_should_be_4(){
-        inputFirstNumber("2");
-        inputSecondNumber("2");
-        performClick(R.id.plus_button);
-        checkResult("4");
-    }
-
-    @Test
     public void minus_2_1_should_be_1(){
         inputFirstNumber("2");
         inputSecondNumber("1");

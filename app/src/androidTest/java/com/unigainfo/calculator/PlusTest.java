@@ -37,7 +37,6 @@ public class PlusTest {
     public static List<Object[]> testData() {
         return Arrays.asList(new Object[][]{
                 {1, 2, 3},
-                {2, 2, 4},
                 {2, 3, 5}
         });
     }
